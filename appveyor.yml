@@ -26,7 +26,7 @@ before_build:
 
 build:
   parallel: true          # enable MSBuild parallel builds
-  project: Supreme.sln    # path to Visual Studio solution or project   
+  project: Gapper.sln    # path to Visual Studio solution or project   
   verbosity: normal
 
 after_build:
