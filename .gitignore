@@ -1,0 +1,12 @@
+# IGNORE THIS FILES
+
+/.vs
+/Gapper/**/*.user
+/gapper/**/*lock.json
+/packages
+
+/Gapper/bin
+/Gapper/obj
+
+/Gapper.Tests/bin
+/Gapper.Tests/obj
