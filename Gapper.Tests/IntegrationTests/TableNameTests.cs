@@ -1,8 +1,6 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Gapper.Attributes;
-using Gapper;
-using System.Linq;
 
 namespace Gapper.Tests.IntegrationTests
 {
