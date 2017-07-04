@@ -4,4 +4,4 @@
 
 [![NuGet](https://img.shields.io/nuget/v/gapper.svg)](https://www.nuget.org/packages/gapper/)
 
-![gapper-logo](gapper-logo.png)
+![gapper-logo|small](gapper-logo.png)
