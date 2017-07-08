@@ -15,7 +15,7 @@ skip_commits:
 
 branches:
   only:
-    - master
+    - release
   
 init:
   - git config --global core.autocrlf input  

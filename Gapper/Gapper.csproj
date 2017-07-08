@@ -4,7 +4,7 @@
     <TargetFramework>netstandard1.6</TargetFramework>
     <AssemblyName>Gapper</AssemblyName>
     <RootNamespace>Gapper</RootNamespace>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>Viktor Nilsson</Authors>
     <Company>Viktor Nilsson</Company>
     <Copyright>Copyright (c) 2017 Viktor Nilsson</Copyright>
@@ -17,6 +17,13 @@
     <Description>Dapper extension with simple crud methods.</Description>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageIconUrl>https://gitlab.com/viktornilsson91/gapper/raw/master/gapper-logo.png</PackageIconUrl>
+    <ApplicationIcon />
+    <Win32Resource />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard1.6\Gapper.xml</DocumentationFile>
+    <NoWarn>1701;1702;1705;1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

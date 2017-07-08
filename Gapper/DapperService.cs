@@ -110,36 +110,11 @@ namespace Gapper
         }
 
         /// <summary>
-        /// Runs a SELECT query.
-        /// </summary>
-        /// <typeparam name="T">Object that should be selected from in database.</typeparam>
-        /// <param name="where">T-SQL Where clause.</param>
-        /// <returns>Requested object.</returns>
-        protected List<T> Select<T>(string where)
-        {
-            if (string.IsNullOrEmpty(where))
-                throw new InvalidOperationException("Where cannot be empty.");
-
-            var sql = $"SELECT * FROM { GetTableName<T>() } WHERE { where }";
-
-            object obj;
-
-            using (var conn = GetConnection())
-            {
-                obj = conn.Query<T>(
-                    sql: sql,
-                    commandType: CommandType.Text).ToList();
-            }
-
-            return (List<T>)obj;
-        }
-
-        /// <summary>
         /// Runs a DELETE query.
         /// </summary>
         /// <typeparam name="T">Object that should be deleted from in database.</typeparam>
         /// <param name="parameters">Where parameters.</param>
-        /// <returns></returns>
+        /// <returns>Void</returns>
         protected void Delete<T>(object parameters)
         {
             var propertyInfos = parameters.GetType()
@@ -165,11 +140,20 @@ namespace Gapper
             }
         }
 
+        /// <summary>
+        /// Get the SQL connection.
+        /// </summary>
+        /// <returns>SqlConnection</returns>
         protected SqlConnection GetConnection()
         {
             return new SqlConnection(_connectionString);
         }
 
+        /// <summary>
+        /// Get table name from type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>Table name as string.</returns>
         protected static string GetTableName<T>()
         {
             var type = typeof(T);
