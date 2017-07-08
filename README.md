@@ -41,7 +41,40 @@ public User GetUser(int id)
 }
 ```
 
-#### This results in follwing SQL query,
+#### This results in following SQL query,
 ```
 SELECT * FROM dbo.User Where Id = @id
 ```
+
+## Rest of the operations.
+```csharp
+public int AddUser(User user)
+{
+    return Insert<User>(user);
+}
+```
+
+```csharp
+public int UpdateUser(User user)
+{
+    return Update<User>(user);
+}
+```
+
+```csharp
+public void DeleteUser(int id)
+{
+    Delete<User>(new { id });
+}
+```
+
+## Table attribute 
+Can be used to specify the unique table name.
+```csharp
+[Table(Name = "tblUser", Schema = "users")]
+public class User
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+```    
