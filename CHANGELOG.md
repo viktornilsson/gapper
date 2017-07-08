@@ -1,3 +1,6 @@
+## 1.0.5
+- Updated XML build path.
+
 ## 1.0.4
 - Updated XML comments.
 
