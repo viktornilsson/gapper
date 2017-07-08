@@ -1,6 +1,6 @@
 # Gapper
 
-[![Build status](https://ci.appveyor.com/api/projects/status/et01c1o3klquficy?svg=true)](https://ci.appveyor.com/project/viktornilsson91/gapper)
+[![Build status](https://ci.appveyor.com/api/projects/status/et01c1o3klquficy?branch=release&svg=true)](https://ci.appveyor.com/project/viktornilsson91/gapper)
 
 [![NuGet](https://img.shields.io/nuget/v/gapper.svg)](https://www.nuget.org/packages/gapper/)
 
