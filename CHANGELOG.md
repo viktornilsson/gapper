@@ -1,3 +1,5 @@
+## 1.0.4
+- Updated XML comments.
 
 ## 1.0.3
 - Updated logo.
