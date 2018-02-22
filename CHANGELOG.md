@@ -1,3 +1,6 @@
+## 1.1.0
+- Added async functions.
+
 ## 1.0.5
 - Updated XML build path.
 
