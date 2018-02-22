@@ -19,38 +19,38 @@ namespace Gapper.Tests.IntegrationTests
 
             Assert.IsTrue(nameCustomer == "[dbo].[Customer]");
         }
-    }
 
-    [Table(Name = "tblUser", Schema = "users")]
-    public class User
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class Customer
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class TestService : DapperService
-    {
-        private static string connectionString;
-
-        public TestService() : base(connectionString)
+        [Table(Name = "tblUser", Schema = "users")]
+        public class User
         {
-            connectionString = string.Empty;
+            public int Id { get; set; }
+            public string Name { get; set; }
         }
 
-        public string GetUserTableName()
+        public class Customer
         {
-            return GetTableName<User>();
+            public int Id { get; set; }
+            public string Name { get; set; }
         }
 
-        public string GetCustomerTableName()
+        public class TestService : DapperService
         {
-            return GetTableName<Customer>();
+            private static string connectionString;
+
+            public TestService() : base(connectionString)
+            {
+                connectionString = string.Empty;
+            }
+
+            public string GetUserTableName()
+            {
+                return GetTableName<User>();
+            }
+
+            public string GetCustomerTableName()
+            {
+                return GetTableName<Customer>();
+            }
         }
     }
 }

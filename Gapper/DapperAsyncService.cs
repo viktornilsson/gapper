@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Dapper;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using Gapper.Helpers;
 
 namespace Gapper
 {
-    public class DapperService
+    public class DapperAsyncService
     {
         private readonly string _connectionString;
 
-        public DapperService(string connectionString)
+        public DapperAsyncService(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -23,14 +23,16 @@ namespace Gapper
         /// <typeparam name="T">Object that should be updated in database.</typeparam>
         /// <param name="parameters">Insert parameters</param>
         /// <returns>ObjectId</returns>
-        protected int Insert<T>(object parameters)
+        protected async Task<int> InsertAsync<T>(object parameters)
         {
             using (var conn = GetConnection())
             {
-                return conn.Query<int>(
+                var result = await conn.QueryAsync<int>(
                     sql: StatementHelper.GenerateInsertStatement<T>(parameters),
                     param: parameters,
-                    commandType: CommandType.Text).FirstOrDefault();
+                    commandType: CommandType.Text).ConfigureAwait(false);
+
+                return result.FirstOrDefault();
             }
         }
 
@@ -40,14 +42,14 @@ namespace Gapper
         /// <typeparam name="T">Object that should be updated in database.</typeparam>
         /// <param name="parameters">Udpate parameters, plus Id of object.</param>
         /// <returns></returns>
-        protected void Update<T>(object parameters)
+        protected async Task UpdateAsync<T>(object parameters)
         {
             using (var conn = GetConnection())
             {
-                conn.Execute(
+                await conn.ExecuteAsync(
                     sql: StatementHelper.GenerateUpdateStatement<T>(parameters),
                     param: parameters,
-                    commandType: CommandType.Text);
+                    commandType: CommandType.Text).ConfigureAwait(false);
             }
         }
 
@@ -57,15 +59,17 @@ namespace Gapper
         /// <typeparam name="T">Object that should be selected from in database.</typeparam>
         /// <param name="parameters">Where parameters.</param>
         /// <returns>Requested object.</returns>
-        protected List<T> Select<T>(object parameters)
+        protected async Task<List<T>> SelectAsync<T>(object parameters)
         {
             using (var conn = GetConnection())
             {
-                return conn.Query<T>(
+                var result = await conn.QueryAsync<T>(
                     sql: StatementHelper.GenerateSelectStatement<T>(parameters),
                     param: parameters,
-                    commandType: CommandType.Text).ToList();
-            }
+                    commandType: CommandType.Text).ConfigureAwait(false);                
+
+                return result.ToList();
+            }           
         }
 
         /// <summary>
@@ -74,14 +78,14 @@ namespace Gapper
         /// <typeparam name="T">Object that should be deleted from in database.</typeparam>
         /// <param name="parameters">Where parameters.</param>
         /// <returns>Void</returns>
-        protected void Delete<T>(object parameters)
+        protected async Task DeleteAsync<T>(object parameters)
         {
             using (var conn = GetConnection())
             {
-                conn.Execute(
+                await conn.ExecuteAsync(
                     sql: StatementHelper.GenerateDeleteStatement<T>(parameters),
                     param: parameters,
-                    commandType: CommandType.Text);
+                    commandType: CommandType.Text).ConfigureAwait(false);
             }
         }
 
