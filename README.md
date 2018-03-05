@@ -23,6 +23,10 @@ Helps you do simple T-SQL queries so you don't have to create SP:s for all simpl
 ```csharp
 public class UserService : DapperService
 ```
+Or you can use the async service.
+```csharp
+public class UserService : DapperAsyncService
+```
 
 #### Then we have a class looking like this.
 ```csharp
