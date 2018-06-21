@@ -1,3 +1,6 @@
+## 1.1.1
+- DebugType embedded
+
 ## 1.1.0
 - Added async functions.
 
