@@ -1,3 +1,7 @@
+
+## 1.1.2
+- Updated DebugType to portable.
+
 ## 1.1.1
 - DebugType embedded
 

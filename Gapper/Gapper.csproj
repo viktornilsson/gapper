@@ -4,7 +4,7 @@
     <TargetFramework>netstandard1.6</TargetFramework>
     <AssemblyName>Gapper</AssemblyName>
     <RootNamespace>Gapper</RootNamespace>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <Authors>Viktor Nilsson</Authors>
     <Company>Viktor Nilsson</Company>
     <Copyright>Copyright (c) 2017 Viktor Nilsson</Copyright>
