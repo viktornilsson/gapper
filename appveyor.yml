@@ -28,6 +28,7 @@ build:
   parallel: true          # enable MSBuild parallel builds
   project: Gapper.sln    # path to Visual Studio solution or project   
   verbosity: normal
+  publish_nuget_symbols: true
 
 after_build:
   - dotnet pack .\Gapper\Gapper.csproj --configuration Release   

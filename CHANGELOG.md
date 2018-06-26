@@ -1,4 +1,8 @@
 
+
+## 1.1.3
+- Add symbols to server.
+
 ## 1.1.2
 - Updated DebugType to portable.
 

@@ -4,7 +4,7 @@
     <TargetFramework>netstandard1.6</TargetFramework>
     <AssemblyName>Gapper</AssemblyName>
     <RootNamespace>Gapper</RootNamespace>
-    <Version>1.1.2</Version>
+    <Version>1.1.3</Version>
     <Authors>Viktor Nilsson</Authors>
     <Company>Viktor Nilsson</Company>
     <Copyright>Copyright (c) 2017 Viktor Nilsson</Copyright>
@@ -19,12 +19,11 @@
     <PackageIconUrl>https://gitlab.com/viktornilsson91/gapper/raw/master/gapper-logo.png</PackageIconUrl>
     <ApplicationIcon />
     <Win32Resource />
-    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard1.6|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard1.6\Gapper.xml</DocumentationFile>
-    <NoWarn>1701;1702;1705;1591</NoWarn>    
+    <NoWarn>1701;1702;1705;1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
