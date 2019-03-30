@@ -1,4 +1,6 @@
 
+## 1.1.4
+- Merged DapperAsyncService.cs and DapperService.cs
 
 ## 1.1.3
 - Add symbols to server.
