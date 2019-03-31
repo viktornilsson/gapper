@@ -1,5 +1,8 @@
 
-## 1.1.4
+## 1.2.1
+- Fix for release notes.
+
+## 1.2.0
 - Added support for netstandard2.0
 
 ## 1.1.4
