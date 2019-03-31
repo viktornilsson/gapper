@@ -1,5 +1,8 @@
 
 ## 1.1.4
+- Added support for netstandard2.0
+
+## 1.1.4
 - Merged DapperAsyncService.cs and DapperService.cs
 
 ## 1.1.3
