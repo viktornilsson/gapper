@@ -16,7 +16,6 @@
     <PackageId>Gapper</PackageId>
     <Product>Gapper</Product>
     <Description>Dapper extension with simple crud methods.</Description>
-    <PackageReleaseNotes></PackageReleaseNotes>
     <PackageIconUrl>https://gitlab.com/viktornilsson91/gapper/raw/master/gapper-logo.png</PackageIconUrl>
     <ApplicationIcon />
     <Win32Resource />
