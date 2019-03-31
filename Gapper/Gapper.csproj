@@ -1,16 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFrameworks>netstandard1.6;netstandard2.0</TargetFrameworks>    
     <AssemblyName>Gapper</AssemblyName>
     <RootNamespace>Gapper</RootNamespace>
     <Version>1.1.4</Version>
     <Authors>Viktor Nilsson</Authors>
     <Company>Viktor Nilsson</Company>
-    <Copyright>Copyright (c) 2017 Viktor Nilsson</Copyright>
+    <Copyright>Copyright (c) 2019 Viktor Nilsson</Copyright>
     <PackageLicenseUrl>https://gitlab.com/viktornilsson91/gapper/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageProjectUrl>https://gitlab.com/viktornilsson91/gapper</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/viktornilsson91/gapper</RepositoryUrl>
+	<PackageReleaseNotes>https://gitlab.com/viktornilsson91/gapper/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageTags>dapper extension crud gapper</PackageTags>
     <PackageId>Gapper</PackageId>
     <Product>Gapper</Product>
@@ -26,6 +27,11 @@
     <NoWarn>1701;1702;1705;1591</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\Gapper.xml</DocumentationFile>
+    <NoWarn>1701;1702;1705;1591</NoWarn>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.60.6" />
   </ItemGroup>

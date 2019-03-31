@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gapper", "Gapper\Gapper.csproj", "{7F191665-FE8E-488E-8122-32A5B9D27C4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gapper", "Gapper\Gapper.csproj", "{7F191665-FE8E-488E-8122-32A5B9D27C4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gapper.Tests", "Gapper.Tests\Gapper.Tests.csproj", "{85FBC98C-C1F9-45FE-B8E2-17217707E139}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gapper.Tests", "Gapper.Tests\Gapper.Tests.csproj", "{85FBC98C-C1F9-45FE-B8E2-17217707E139}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {057C514C-A11D-4FD2-9E8F-EC6860A4AF6A}
 	EndGlobalSection
 EndGlobal
