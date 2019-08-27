@@ -17,15 +17,31 @@ PM> Install-Package Gapper
 
 Helps you do simple T-SQL queries so you don't have to create SP:s for all simple calls.
 
-# Usage
+# IDBConnection extension usage
 
-#### First reference the DapperService into your class.
+#### First reference the namespace Gapper into your class.
 ```csharp
-public class UserService : DapperService
+using Gapper;
 ```
-Or you can use the async service.
+
+#### Then you can use it like this.
 ```csharp
-public class UserService : DapperAsyncService
+using (var connection = new SqlConnection(connString))
+{
+    connection.Open();
+
+    connection.Insert<User>(user);
+
+    connection.Close();
+}
+```
+
+
+# GapperService usage
+
+#### First reference the GapperService into your class.
+```csharp
+public class UserService : GapperService
 ```
 
 #### Then we have a class looking like this.
