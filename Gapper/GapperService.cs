@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using Dapper;
 using System.Data.SqlClient;
-using Gapper.Helpers;
 using System.Threading.Tasks;
 
 namespace Gapper
 {
-    public class DapperService
+    public class GapperService
     {
         private readonly string _connectionString;
 
-        public DapperService(string connectionString)
+        public GapperService(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -27,10 +24,7 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                return conn.Query<int>(
-                    sql: StatementHelper.GenerateInsertStatement<T>(parameters),
-                    param: parameters,
-                    commandType: CommandType.Text).FirstOrDefault();
+                return conn.Insert<T>(parameters);
             }
         }
 
@@ -44,12 +38,7 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                var result = await conn.QueryAsync<int>(
-                    sql: StatementHelper.GenerateInsertStatement<T>(parameters),
-                    param: parameters,
-                    commandType: CommandType.Text).ConfigureAwait(false);
-
-                return result.FirstOrDefault();
+                return await conn.InsertAsync<T>(parameters);                
             }
         }
 
@@ -63,10 +52,7 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                conn.Execute(
-                    sql: StatementHelper.GenerateUpdateStatement<T>(parameters),
-                    param: parameters,
-                    commandType: CommandType.Text);
+                conn.Update<T>(parameters);
             }
         }
 
@@ -80,10 +66,7 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                await conn.ExecuteAsync(
-                    sql: StatementHelper.GenerateUpdateStatement<T>(parameters),
-                    param: parameters,
-                    commandType: CommandType.Text).ConfigureAwait(false);
+                await conn.UpdateAsync<T>(parameters);
             }
         }
 
@@ -97,10 +80,7 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                return conn.Query<T>(
-                    sql: StatementHelper.GenerateSelectStatement<T>(parameters),
-                    param: parameters,
-                    commandType: CommandType.Text).ToList();
+                return conn.Select<T>(parameters);
             }
         }
 
@@ -114,12 +94,7 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                var result = await conn.QueryAsync<T>(
-                    sql: StatementHelper.GenerateSelectStatement<T>(parameters),
-                    param: parameters,
-                    commandType: CommandType.Text).ConfigureAwait(false);
-
-                return result.ToList();
+                return (await conn.SelectAsync<T>(parameters)).ToList();
             }
         }
 
@@ -133,10 +108,7 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                conn.Execute(
-                    sql: StatementHelper.GenerateDeleteStatement<T>(parameters),
-                    param: parameters,
-                    commandType: CommandType.Text);
+                conn.Delete<T>(parameters);
             }
         }
 
@@ -150,10 +122,7 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                await conn.ExecuteAsync(
-                    sql: StatementHelper.GenerateDeleteStatement<T>(parameters),
-                    param: parameters,
-                    commandType: CommandType.Text).ConfigureAwait(false);
+                await conn.DeleteAsync<T>(parameters);
             }
         }
 
@@ -164,16 +133,6 @@ namespace Gapper
         protected SqlConnection GetConnection()
         {
             return new SqlConnection(_connectionString);
-        }
-
-        /// <summary>
-        /// Get table name from type.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns>Table name as string.</returns>
-        protected static string GetTableName<T>()
-        {
-            return StatementHelper.GenerateTableName<T>();
         }
     }
 }

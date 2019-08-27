@@ -33,7 +33,7 @@ namespace Gapper.Tests.IntegrationTests
             public string Name { get; set; }
         }
 
-        public class TestService : DapperService
+        public class TestService : GapperService
         {
             private static string connectionString;
 
@@ -44,12 +44,12 @@ namespace Gapper.Tests.IntegrationTests
 
             public string GetUserTableName()
             {
-                return GetTableName<User>();
+                return Gapper.GetTableName<User>();
             }
 
             public string GetCustomerTableName()
             {
-                return GetTableName<Customer>();
+                return Gapper.GetTableName<Customer>();
             }
         }
     }

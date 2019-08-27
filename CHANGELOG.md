@@ -1,4 +1,7 @@
 
+## 1.3.0
+- Added new static class so you can extend IDBConnection.
+
 ## 1.2.1
 - Fix for release notes.
 
