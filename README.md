@@ -26,16 +26,20 @@ using Gapper;
 
 #### Then you can use it like this.
 ```csharp
-using (var connection = new SqlConnection(connString))
-{
-    connection.Open();
-
-    connection.Insert<User>(user);
-
-    connection.Close();
-}
+    var users = connection.Select<User>(new { Name = "Viktor" });
 ```
 
+```csharp
+    var users = await connection.SelectAsync<User>(new { Name = "Viktor" });
+```
+
+```csharp
+    var id = connection.Insert<User>(user);
+```
+
+```csharp
+    var id = await connection.InsertAsync<User>(user);
+```
 
 # GapperService usage
 
