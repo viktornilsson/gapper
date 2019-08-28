@@ -1,4 +1,5 @@
 ﻿using Gapper.Attributes;
+using Gapper.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,21 @@ namespace Gapper.Helpers
             return $"UPDATE {GenerateTableName<T>()} SET {string.Join(",", updates)} WHERE [Id] = @Id";
         }
 
+        internal static string GenerateUpdateStatement<T>(UpdateValues values, List<Statement> statements)
+        {           
+            var updates = values.Select(x => $"[{x.Key}] = @{x.Key}");
+
+            if (updates.Count() < 1)
+                throw new InvalidOperationException("Values cannot be empty");
+
+            var wheres = statements.Select(x => $"[{x.Name}] {GetOperator(x.Operator)} @{x.Name}");
+
+            if (wheres.Count() < 1)
+                throw new InvalidOperationException("Wheres cannot be empty");
+
+            return $"UPDATE {GenerateTableName<T>()} SET {string.Join(",", updates)} WHERE {string.Join(" AND ", wheres)}";
+        }
+
         internal static string GenerateSelectStatement<T>(object parameters)
         {
             var propertyInfos = parameters.GetType()
@@ -60,6 +76,18 @@ namespace Gapper.Helpers
             return sql;
         }
 
+        internal static string GenerateSelectStatement<T>(List<Statement> statements)
+        {
+            var wheres = statements.Select(x => $"[{x.Name}] {GetOperator(x.Operator)} @{x.Name}");
+
+            var sql = $"SELECT * FROM {GenerateTableName<T>()}";
+
+            if (wheres.Count() > 0)
+                sql += $" WHERE {string.Join(" AND ", wheres)}";
+
+            return sql;
+        }
+
         internal static string GenerateDeleteStatement<T>(object parameters)
         {
             var propertyInfos = parameters.GetType()
@@ -72,6 +100,16 @@ namespace Gapper.Helpers
                 .ToArray();
 
             if (wheres.Length < 1)
+                throw new InvalidOperationException("Wheres cannot be empty");
+
+            return $"DELETE FROM {GenerateTableName<T>()} WHERE {string.Join(" AND ", wheres)}";
+        }
+
+        internal static string GenerateDeleteStatement<T>(List<Statement> statements)
+        {
+            var wheres = statements.Select(x => $"[{x.Name}] {GetOperator(x.Operator)} @{x.Name}");
+
+            if (wheres.Count() < 1)
                 throw new InvalidOperationException("Wheres cannot be empty");
 
             return $"DELETE FROM {GenerateTableName<T>()} WHERE {string.Join(" AND ", wheres)}";
@@ -97,6 +135,23 @@ namespace Gapper.Helpers
             }
 
             return $"[dbo].[{typeof(T).Name}]";
+        }
+
+        private static string GetOperator(Operator @operator)
+        {
+            switch (@operator)
+            {
+                case Operator.Equal:
+                    return "=";
+                case Operator.NotEqual:
+                    return "<>";
+                case Operator.GreaterThan:
+                    return ">";
+                case Operator.LessThan:
+                    return "<";
+                default:
+                    throw new ArgumentNullException(nameof(@operator));
+            }
         }
     }
 }

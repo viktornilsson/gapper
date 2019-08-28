@@ -2,6 +2,9 @@
 using System.Linq;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Gapper.Helpers;
+using System.Data;
+using Dapper;
 
 namespace Gapper
 {
@@ -24,7 +27,10 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                return conn.Insert<T>(parameters);
+                return conn.Query<int>(
+                    sql: StatementHelper.GenerateInsertStatement<T>(parameters),
+                    param: parameters,
+                    commandType: CommandType.Text).FirstOrDefault();
             }
         }
 
@@ -38,7 +44,12 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                return await conn.InsertAsync<T>(parameters);                
+                var result = await conn.QueryAsync<int>(
+                    sql: StatementHelper.GenerateInsertStatement<T>(parameters),
+                    param: parameters,
+                    commandType: CommandType.Text).ConfigureAwait(false);
+
+                return result.FirstOrDefault();
             }
         }
 
@@ -52,7 +63,10 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                conn.Update<T>(parameters);
+                conn.Execute(
+                    sql: StatementHelper.GenerateUpdateStatement<T>(parameters),
+                    param: parameters,
+                    commandType: CommandType.Text);
             }
         }
 
@@ -66,7 +80,10 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                await conn.UpdateAsync<T>(parameters);
+                await conn.ExecuteAsync(
+                    sql: StatementHelper.GenerateUpdateStatement<T>(parameters),
+                    param: parameters,
+                    commandType: CommandType.Text).ConfigureAwait(false);
             }
         }
 
@@ -80,7 +97,10 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                return conn.Select<T>(parameters);
+                return conn.Query<T>(
+                    sql: StatementHelper.GenerateSelectStatement<T>(parameters),
+                    param: parameters,
+                    commandType: CommandType.Text).ToList();
             }
         }
 
@@ -94,7 +114,12 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                return (await conn.SelectAsync<T>(parameters)).ToList();
+                var result = await conn.QueryAsync<T>(
+                    sql: StatementHelper.GenerateSelectStatement<T>(parameters),
+                    param: parameters,
+                    commandType: CommandType.Text).ConfigureAwait(false);
+
+                return result.ToList();
             }
         }
 
@@ -108,7 +133,10 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                conn.Delete<T>(parameters);
+                conn.Execute(
+                    sql: StatementHelper.GenerateDeleteStatement<T>(parameters),
+                    param: parameters,
+                    commandType: CommandType.Text);
             }
         }
 
@@ -122,7 +150,10 @@ namespace Gapper
         {
             using (var conn = GetConnection())
             {
-                await conn.DeleteAsync<T>(parameters);
+                await conn.ExecuteAsync(
+                    sql: StatementHelper.GenerateDeleteStatement<T>(parameters),
+                    param: parameters,
+                    commandType: CommandType.Text).ConfigureAwait(false);
             }
         }
 

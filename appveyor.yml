@@ -13,6 +13,9 @@ skip_commits:
   - LICENSE.md
   - README.md
 
+services:
+  - mssql2016
+  
 branches:
   only:
     - release
