@@ -1,4 +1,7 @@
 
+## 1.4.0
+- Added builder design with expressions.
+
 ## 1.3.0
 - Added new static class so you can extend IDBConnection.
 

@@ -90,7 +90,8 @@ namespace Gapper
         /// </summary>
         /// <typeparam name="T">The type to be update.</typeparam>
         /// <param name="connection">Open SqlConnection</param>
-        /// <param name="conditions">Update conditions.</param>
+        /// <param name="values">Values to be updated.</param>
+        /// <param name="conditions">Update conditions.</param>      
         public static void Update<T>(this IDbConnection connection, UpdateValues values, Action<IGapperCondition> conditions)
         {
             var expression = new GapperCondition();
@@ -113,7 +114,8 @@ namespace Gapper
         /// </summary>
         /// <typeparam name="T">The type to be update.</typeparam>
         /// <param name="connection">Open SqlConnection</param>
-        /// <param name="conditions">Update conditions.</param>
+        /// <param name="values">Values to be updated.</param>
+        /// <param name="conditions">Update conditions.</param>        
         public static async Task UpdateAsync<T>(this IDbConnection connection, UpdateValues values, Action<IGapperCondition> conditions)
         {
             var expression = new GapperCondition();
