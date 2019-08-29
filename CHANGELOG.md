@@ -1,4 +1,7 @@
 
+## 1.4.1
+- Minor changes.
+
 ## 1.4.0
 - Added builder design with expressions.
 
