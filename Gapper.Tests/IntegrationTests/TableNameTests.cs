@@ -1,4 +1,3 @@
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Gapper.Attributes;
 
@@ -17,17 +16,17 @@ namespace Gapper.Tests.IntegrationTests
 
             var nameCustomer = service.GetCustomerTableName();
 
-            Assert.IsTrue(nameCustomer == "[dbo].[Customer]");
+            Assert.IsTrue(nameCustomer == "[dbo].[TestCustomer]");
         }
 
         [Table(Name = "tblUser", Schema = "users")]
-        public class User
+        public class TestUser
         {
             public int Id { get; set; }
             public string Name { get; set; }
         }
 
-        public class Customer
+        public class TestCustomer
         {
             public int Id { get; set; }
             public string Name { get; set; }
@@ -44,12 +43,12 @@ namespace Gapper.Tests.IntegrationTests
 
             public string GetUserTableName()
             {
-                return Gapper.GetTableName<User>();
+                return Gapper.GetTableName<TestUser>();
             }
 
             public string GetCustomerTableName()
             {
-                return Gapper.GetTableName<Customer>();
+                return Gapper.GetTableName<TestCustomer>();
             }
         }
     }

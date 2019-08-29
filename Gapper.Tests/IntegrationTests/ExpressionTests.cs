@@ -1,16 +1,17 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Gapper.Expressions;
 using System.Data.SqlClient;
-using Dapper;
 using System.Threading.Tasks;
 using System;
+using Gapper.Tests.IntegrationTests.Helpers;
+using Gapper.Tests.IntegrationTests.Models;
 
 namespace Gapper.Tests.IntegrationTests
 {
     [TestClass]
     public class ExpressionTests
     {
-        protected static readonly bool IsAppVeyor = Environment.GetEnvironmentVariable("Appveyor")?.ToUpperInvariant() == "TRUE";
+        private static readonly bool IsAppVeyor = Environment.GetEnvironmentVariable("Appveyor")?.ToUpperInvariant() == "TRUE";
         
         [TestMethod]
         public void QueryTest()
@@ -18,19 +19,16 @@ namespace Gapper.Tests.IntegrationTests
             int id = 1;
             string name = "Sten";
 
-            string connString = IsAppVeyor ?
-                "Server=(local)\\SQL2016;Database=master;User ID=sa;Password=Password12!" :
-                "Server=(localdb)\\MSSQLLocalDB; Integrated Security = true; Database = dbTest;";
-
-            CreateTable(connString);
+            var connString = DatabaseHelper.GetConnectionString(IsAppVeyor);
+            DatabaseHelper.CreateTable(connString);
 
             using (var conn = new SqlConnection(connString))
             {                
-                var user = new User() { Id = 1, Name = name };
+                var user = new User() { Id = 1, Name = name, Age = 20 };
                 var newId = conn.Insert(user);
 
-                var selectUser = conn.Select<User>(x =>
-                    x.Condition(nameof(name), Operator.Equal, name)
+                var selectUser = conn.Select<User>(x => x
+                    .Condition(nameof(name), Operator.Eq, name)
                 );
 
                 var values = new UpdateValues
@@ -38,37 +36,35 @@ namespace Gapper.Tests.IntegrationTests
                     { nameof(name), "Kalle" }
                 };
 
-                conn.Update<User>(values, x => x.Condition(nameof(id), Operator.Equal, newId));
+                conn.Update<User>(values, x => x.Condition(nameof(id), Operator.Eq, newId));
 
                 conn.Delete<User>(q => q
-                    .Condition(nameof(id), Operator.Equal, newId)
-                    .And(nameof(name), Operator.Equal, "Kalle"));                                    
+                    .Condition(nameof(id), Operator.Eq, newId)
+                    .And(nameof(name), Operator.Eq, "Kalle"));
 
-                Assert.IsTrue(newId > 0);
+                var delUsers = conn.Select<User>(x => { });
+
+                Assert.IsTrue(delUsers.Count == 0);
             }                        
         }
         
         [TestMethod]
         public async Task QueryAsyncTest()
-        {
-            int id = 1;
+        {            
             string name = "Sten";
 
-            string connString = IsAppVeyor ?
-                "Server=(local)\\SQL2016;Database=master;User ID=sa;Password=Password12!" :
-                "Server = (localdb)\\MSSQLLocalDB; Integrated Security = true; Database = dbTest;";
-
-            CreateTable(connString);
+            var connString = DatabaseHelper.GetConnectionString(IsAppVeyor);
+            DatabaseHelper.CreateTable(connString);
 
             using (var conn = new SqlConnection(connString))
             {
-                var user = new User() { Id = 1, Name = name };
+                var user = new User() { Id = 1, Name = name, Age = 20 };
                 var newId = await conn.InsertAsync(user);
 
                 Assert.IsTrue(newId > 0);
 
                 var selectUser = await conn.SelectAsync<User>(x =>
-                    x.Condition(nameof(name), Operator.Equal, name)
+                    x.Condition(nameof(name), Operator.Eq, name)
                 );
 
                 Assert.IsTrue(selectUser.Count > 0);
@@ -78,36 +74,47 @@ namespace Gapper.Tests.IntegrationTests
                     { nameof(name), "Kalle" }
                 };
 
-                await conn.UpdateAsync<User>(values, x => x.Condition(nameof(id), Operator.Equal, newId));
+                await conn.UpdateAsync<User>(values, x => x.Condition("Id", Operator.Eq, newId));
 
                 await conn.DeleteAsync<User>(q => q
-                    .Condition(nameof(id), Operator.Equal, newId)
-                    .And(nameof(name), Operator.Equal, "Kalle"));
+                    .Condition("Id", Operator.Eq, newId)
+                    .And(nameof(name), Operator.Eq, "Kalle"));
+
+                var delUsers = await conn.SelectAsync<User>(x => { });
+
+                Assert.IsTrue(delUsers.Count == 0);
             }
         }
 
-        private void CreateTable(string connString)
+        [TestMethod]
+        public void LessThanTest()
         {
+            var connString = DatabaseHelper.GetConnectionString(IsAppVeyor);
+            DatabaseHelper.CreateTable(connString);
+
             using (var conn = new SqlConnection(connString))
             {
-                var sql = @"
-                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'User')
-                BEGIN
-                    CREATE TABLE [dbo].[User] (
-	                        [Id]			INT				IDENTITY(1, 1) NOT NULL PRIMARY KEY,
-	                        [Name]			NVARCHAR(256)	NOT NULL,
-	                        [CreatedDate]	DATETIME		NOT NULL DEFAULT GETDATE()
-                    );
-                END";
+                var now = DateTime.UtcNow;
+                var user = new User() { Id = 1, Name = "Sten", Age = 20, CreatedDate = now };
+                var newId = conn.Insert(user);
 
-                conn.Execute(sql);
+                Assert.IsTrue(newId > 0);
+
+                var noUsers = conn.Select<User>(x => 
+                    x.Condition("CreatedDate", Operator.Lt, now));
+
+                Assert.IsTrue(noUsers.Count == 0);
+
+                var users = conn.Select<User>(x =>
+                    x.Condition("CreatedDate", Operator.Gte, now));
+
+                Assert.IsTrue(users.Count > 0);
+
+                conn.Delete<User>(x => x.Condition("Id", Operator.Eq, newId));
+
+                var delUsers = conn.Select<User>(x => { });
+                Assert.IsTrue(delUsers.Count == 0);
             }
-        }
-
-        private class User
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
         }
     }
 }

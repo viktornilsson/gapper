@@ -141,14 +141,18 @@ namespace Gapper.Helpers
         {
             switch (@operator)
             {
-                case Operator.Equal:
+                case Operator.Eq:
                     return "=";
-                case Operator.NotEqual:
+                case Operator.Nq:
                     return "<>";
-                case Operator.GreaterThan:
+                case Operator.Gt:
                     return ">";
-                case Operator.LessThan:
+                case Operator.Gte:
+                    return ">=";
+                case Operator.Lt:
                     return "<";
+                case Operator.Lte:
+                    return "<=";
                 default:
                     throw new ArgumentNullException(nameof(@operator));
             }

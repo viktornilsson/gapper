@@ -1,6 +1,7 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Gapper.Helpers;
+using Gapper.Tests.IntegrationTests.Models;
 
 namespace Gapper.Tests.IntegrationTests
 {
@@ -13,12 +14,13 @@ namespace Gapper.Tests.IntegrationTests
             var user = new User()
             {
                 Id = 1,
-                Name = "John Doe"
+                Name = "John Doe",
+                Age = 20
             };
 
             var statement = StatementHelper.GenerateInsertStatement<User>(user);
 
-            var equalTo = "INSERT INTO [dbo].[User] ([Name]) VALUES (@Name) SELECT CAST(SCOPE_IDENTITY() AS INT)";
+            var equalTo = "INSERT INTO [dbo].[User] ([Age],[CreatedDate],[Name]) VALUES (@Age,@CreatedDate,@Name) SELECT CAST(SCOPE_IDENTITY() AS INT)";
 
             Assert.AreEqual(statement, equalTo);
         }
@@ -38,7 +40,7 @@ namespace Gapper.Tests.IntegrationTests
         [TestMethod]
         public void UpdateStatement()
         {
-            var user = new User()
+            var user = new
             {
                 Id = 1,
                 Name = "John Doe"
@@ -75,12 +77,6 @@ namespace Gapper.Tests.IntegrationTests
             Assert.ThrowsException<InvalidOperationException>(() =>
                 StatementHelper.GenerateDeleteStatement<User>(new {})
             );
-        }
-
-        public class User
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
         }
     }
 }
