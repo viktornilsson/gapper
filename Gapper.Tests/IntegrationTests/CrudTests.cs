@@ -1,4 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 using System;
 using Gapper.Tests.IntegrationTests.Helpers;
 using Gapper.Tests.IntegrationTests.Models;
@@ -6,36 +8,55 @@ using Gapper.Tests.IntegrationTests.Models;
 namespace Gapper.Tests.IntegrationTests
 {
     [TestClass]
-    public class CrudTests : GapperService
+    public class CrudTests
     {
         private static readonly bool IsAppVeyor = Environment.GetEnvironmentVariable("Appveyor")?.ToUpperInvariant() == "TRUE";
-        private static string connString = DatabaseHelper.GetConnectionString(IsAppVeyor);
-
-        public CrudTests() : base(connString)
-        {
-
-        }
-
+        
         [TestMethod]
-        public void CrudTest()
+        public async Task CrudTestAsync()
         {
+            var connString = DatabaseHelper.GetConnectionString(IsAppVeyor);
             DatabaseHelper.CreateTable(connString);
 
-            var user = new User() { Id = 1, Name = "Sten", Age = 20 };
-            var newId = Insert<User>(user);
+            using (var sqlConnection = new SqlConnection(connString))
+            {
+                var insertUser = new User() { Id = 1, Name = "Sten", Age = 20 };
 
-            Assert.IsTrue(newId > 0);
+                var newId = await sqlConnection
+                    .Insert(insertUser)
+                    .ExecuteAsync();
 
-            var users = Select<User>(new { });
+                Assert.IsTrue(newId > 0);
 
-            Assert.IsTrue(users.Count > 0);
+                var user = await sqlConnection
+                    .Select<User>()
+                    .Where("Name").EqualTo("Sten")
+                    .And("Id").EqualTo(newId)               
+                    .FirstOrDefaultAsync();
 
-            Update<User>(new { Id = newId, Name = "Kalle" });
+                Assert.IsTrue(user != null);
 
-            Delete<User>(new { Name = "Kalle" });
+                await sqlConnection
+                    .Update<User>(new UpdateValues
+                    {
+                        { "Name", "Pelle" }
+                    })
+                    .Where("Name").EqualTo("Sten")
+                    .ExecuteAsync();
 
-            var delUsers = Select<User>(new { });
-            Assert.IsTrue(delUsers.Count == 0);
+                await sqlConnection
+                    .Delete<User>()
+                    .Where("Id").EqualTo(newId)
+                    .And("Name").NotEqualTo("Sten")
+                    .ExecuteAsync();
+
+                var delUsers = await sqlConnection
+                    .Select<User>()
+                    .ToListAsync();
+
+                Assert.IsTrue(delUsers.Count == 0);
+            }                        
         }
+        
     }
 }

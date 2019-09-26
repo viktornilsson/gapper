@@ -9,12 +9,10 @@ namespace Gapper.Tests.IntegrationTests
         [TestMethod]
         public void CheckTableNames()
         {
-            var service = new TestService();
-
-            var nameUser = service.GetUserTableName();
+            var nameUser = Gapper.GetTableName<TestUser>();
             Assert.IsTrue(nameUser == "[users].[tblUser]");
 
-            var nameCustomer = service.GetCustomerTableName();
+            var nameCustomer = Gapper.GetTableName<TestCustomer>();
 
             Assert.IsTrue(nameCustomer == "[dbo].[TestCustomer]");
         }
@@ -30,26 +28,6 @@ namespace Gapper.Tests.IntegrationTests
         {
             public int Id { get; set; }
             public string Name { get; set; }
-        }
-
-        public class TestService : GapperService
-        {
-            private static string connectionString;
-
-            public TestService() : base(connectionString)
-            {
-                connectionString = string.Empty;
-            }
-
-            public string GetUserTableName()
-            {
-                return Gapper.GetTableName<TestUser>();
-            }
-
-            public string GetCustomerTableName()
-            {
-                return Gapper.GetTableName<TestCustomer>();
-            }
         }
     }
 }
