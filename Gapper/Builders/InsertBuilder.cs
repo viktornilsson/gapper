@@ -10,6 +10,7 @@ namespace Gapper.Builders
 {
     public interface IInsertBuilder<T> : IStatementBuilder
     {
+        int Execute();
         Task<int> ExecuteAsync();
     }
 
@@ -45,12 +46,18 @@ namespace Gapper.Builders
             AddLine("SELECT CAST(SCOPE_IDENTITY() AS INT)");
         }
 
+        public int Execute()
+        {
+            return DbConnection.Query<int>(
+                sql: ToSql(),
+                param: Parameters,
+                commandType: CommandType.Text).FirstOrDefault();
+        }
+
         public async Task<int> ExecuteAsync()
         {
-            var sql = ToSql();
-
             var result = await DbConnection.QueryAsync<int>(
-                sql: sql,
+                sql: ToSql(),
                 param: Parameters,
                 commandType: CommandType.Text).ConfigureAwait(false);
 

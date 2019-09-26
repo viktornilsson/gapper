@@ -14,6 +14,7 @@ namespace Gapper.Builders
     {
         IConditionBuilder<IDeleteWhereBuilder<T>> And(string columnName);
         IConditionBuilder<IDeleteWhereBuilder<T>> Or(string columnName);
+        void Execute();
         Task ExecuteAsync();
     }
 
@@ -43,12 +44,18 @@ namespace Gapper.Builders
             return new ConditionBuilder<IDeleteWhereBuilder<T>>(this, "OR", columnName);
         }
 
+        public void Execute()
+        {
+            DbConnection.Execute(
+                sql: ToSql(),
+                param: Parameters,
+                commandType: CommandType.Text);
+        }
+
         public async Task ExecuteAsync()
         {
-            var sql = ToSql();
-
             await DbConnection.ExecuteAsync(
-                sql: sql,
+                sql: ToSql(),
                 param: Parameters,
                 commandType: CommandType.Text).ConfigureAwait(false);
         }

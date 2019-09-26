@@ -10,6 +10,7 @@ namespace Gapper.Builders
 {
     public interface IUpdateExecute<T>
     {
+        void Execute();
         Task ExecuteAsync();
     }
 
@@ -59,12 +60,18 @@ namespace Gapper.Builders
             return new ConditionBuilder<IUpdateWhereBuilder<T>>(this, "OR", columnName);
         }
 
+        public void Execute()
+        {
+            DbConnection.Execute(
+                sql: ToSql(),
+                param: Parameters,
+                commandType: CommandType.Text);
+        }
+
         public async Task ExecuteAsync()
         {
-            var sql = ToSql();
-
             await DbConnection.ExecuteAsync(
-                sql: sql,
+                sql: ToSql(),
                 param: Parameters,
                 commandType: CommandType.Text).ConfigureAwait(false);
         }

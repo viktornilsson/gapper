@@ -8,12 +8,12 @@ using Gapper.Tests.IntegrationTests.Models;
 namespace Gapper.Tests.IntegrationTests
 {
     [TestClass]
-    public class CrudTests
+    public class CrudAsyncTests
     {
         private static readonly bool IsAppVeyor = Environment.GetEnvironmentVariable("Appveyor")?.ToUpperInvariant() == "TRUE";
         
         [TestMethod]
-        public void CrudTest()
+        public async Task CrudTestAsync()
         {
             var connString = DatabaseHelper.GetConnectionString(IsAppVeyor);
             DatabaseHelper.CreateTable(connString);
@@ -22,37 +22,37 @@ namespace Gapper.Tests.IntegrationTests
             {
                 var insertUser = new User() { Id = 1, Name = "Sten", Age = 20 };
 
-                var newId = sqlConnection
+                var newId = await sqlConnection
                     .Insert(insertUser)
-                    .Execute();
+                    .ExecuteAsync();
 
                 Assert.IsTrue(newId > 0);
 
-                var user = sqlConnection
+                var user = await sqlConnection
                     .Select<User>()
                     .Where("Name").EqualTo("Sten")
                     .And("Id").EqualTo(newId)               
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
 
                 Assert.IsTrue(user != null);
 
-                sqlConnection
+                await sqlConnection
                     .Update<User>(new UpdateValues
                     {
                         { "Name", "Pelle" }
                     })
                     .Where("Name").EqualTo("Sten")
-                    .Execute();
+                    .ExecuteAsync();
 
-                sqlConnection
+                await sqlConnection
                     .Delete<User>()
                     .Where("Id").EqualTo(newId)
                     .And("Name").NotEqualTo("Sten")
-                    .Execute();
+                    .ExecuteAsync();
 
-                var delUsers = sqlConnection
+                var delUsers = await sqlConnection
                     .Select<User>()
-                    .ToList();
+                    .ToListAsync();
 
                 Assert.IsTrue(delUsers.Count == 0);
             }                        

@@ -9,7 +9,9 @@ namespace Gapper.Builders
 {
     public interface ISelectExecute<T>
     {
+        List<T> ToList();        
         Task<List<T>> ToListAsync();
+        T FirstOrDefault();
         Task<T> FirstOrDefaultAsync();
     }
 
@@ -55,24 +57,36 @@ namespace Gapper.Builders
             return base.AddLine(line) as ISelectBuilder<T>;
         }
 
+        public List<T> ToList()
+        {
+            return DbConnection.Query<T>(
+                sql: ToSql(),
+                param: Parameters,
+                commandType: CommandType.Text).ToList();
+        }
+
         public async Task<List<T>> ToListAsync()
         {
-            var sql = ToSql();
-
             var result = await DbConnection.QueryAsync<T>(
-                sql: sql,
+                sql: ToSql(),
                 param: Parameters,
                 commandType: CommandType.Text).ConfigureAwait(false);
 
             return result.ToList();
         }
 
+        public T FirstOrDefault()
+        {
+            return DbConnection.Query<T>(
+                sql: ToSql(),
+                param: Parameters,
+                commandType: CommandType.Text).FirstOrDefault();
+        }
+
         public async Task<T> FirstOrDefaultAsync()
         {
-            var sql = ToSql();
-
             var result = await DbConnection.QueryAsync<T>(
-                sql: sql,
+                sql: ToSql(),
                 param: Parameters,
                 commandType: CommandType.Text).ConfigureAwait(false);
 
