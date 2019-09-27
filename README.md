@@ -25,71 +25,37 @@ using Gapper;
 ```
 
 #### Then you can use it like this.
-```csharp
-    var users = connection.Select<User>(new { Name = "Viktor" });
-```
 
 ```csharp
-    var users = await connection.SelectAsync<User>(new { Name = "Viktor" });
-```
+var user = new User() { Id = 1, Name = "Sten", Age = 20 };
 
-```csharp
-    var id = connection.Insert<User>(user);
+var id = connection
+    .Insert(user)
+    .Execute();
 ```
 
 ```csharp
-    var id = await connection.InsertAsync<User>(user);
-```
-
-# GapperService usage
-
-#### First reference the GapperService into your class.
-```csharp
-public class UserService : GapperService
-```
-
-#### Then we have a class looking like this.
-```csharp
-public class User
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-}
-```
-
-#### And the last step is to use the wanted method, here we have a simple select.
-```csharp
-public User GetUser(int id)
-{
-    return Select<User>(new { id }).FirstOrDefault();
-}
-```
-
-#### This results in following SQL query,
-```
-SELECT * FROM dbo.User Where Id = @id
-```
-
-## Rest of the operations.
-```csharp
-public int AddUser(User user)
-{
-    return Insert<User>(user);
-}
+var user = connection
+    .Select<User>()
+    .Where(nameof(User.Name)).EqualTo("Viktor")
+    .FirstOrDefault();
 ```
 
 ```csharp
-public int UpdateUser(User user)
-{
-    return Update<User>(user);
-}
+connection
+    .Update<User>(new UpdateValues
+    {
+        { nameof(User.Name), "Viktor" }
+    })
+    .Where(nameof(User.Id)).EqualTo(1)
+    .Execute();
 ```
 
 ```csharp
-public void DeleteUser(int id)
-{
-    Delete<User>(new { id });
-}
+connection
+    .Delete<User>()
+    .Where(nameof(User.Id)).EqualTo(newId)
+    .Execute();
 ```
 
 ## Table attribute 
