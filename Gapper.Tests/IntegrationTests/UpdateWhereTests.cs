@@ -13,9 +13,9 @@ namespace Gapper.Tests.IntegrationTests
             var sql = new SqlConnection("")
                 .Update<User>(new UpdateValues
                 {
-                    { "Name", "Kalle" }
+                    { nameof(User.Name), "Kalle" }
                 })
-                .Where("Id").EqualTo(1)
+                .Where(nameof(User.Id)).EqualTo(1)
                 .ToSql();
 
             var expected = "UPDATE [dbo].[User] SET [Name] = @name_1\nWHERE [Id] = @id_2";

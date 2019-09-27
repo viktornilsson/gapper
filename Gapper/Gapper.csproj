@@ -4,15 +4,15 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>    
     <AssemblyName>Gapper</AssemblyName>
     <RootNamespace>Gapper</RootNamespace>
-    <Version>2.0.0-rc</Version>
+    <Version>2.0.1</Version>
     <Authors>Viktor Nilsson</Authors>
     <Company>Viktor Nilsson</Company>
     <Copyright>Copyright (c) 2019 Viktor Nilsson</Copyright>
     <PackageLicenseUrl>https://gitlab.com/viktornilsson91/gapper/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageProjectUrl>https://gitlab.com/viktornilsson91/gapper</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/viktornilsson91/gapper</RepositoryUrl>
-	<PackageReleaseNotes>https://gitlab.com/viktornilsson91/gapper/blob/master/CHANGELOG.md</PackageReleaseNotes>
-    <PackageTags>dapper extension crud gapper</PackageTags>
+    <PackageReleaseNotes>https://gitlab.com/viktornilsson91/gapper/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <PackageTags>dapper extension crud gapper fluent</PackageTags>
     <PackageId>Gapper</PackageId>
     <Product>Gapper</Product>
     <Description>Dapper extension with simple crud methods.</Description>

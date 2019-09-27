@@ -30,8 +30,8 @@ namespace Gapper.Tests.IntegrationTests
 
                 var user = sqlConnection
                     .Select<User>()
-                    .Where("Name").EqualTo("Sten")
-                    .And("Id").EqualTo(newId)               
+                    .Where(nameof(User.Name)).EqualTo("Sten")
+                    .And(nameof(User.Id)).EqualTo(newId)               
                     .FirstOrDefault();
 
                 Assert.IsTrue(user != null);
@@ -39,15 +39,15 @@ namespace Gapper.Tests.IntegrationTests
                 sqlConnection
                     .Update<User>(new UpdateValues
                     {
-                        { "Name", "Pelle" }
+                        { nameof(User.Name), "Pelle" }
                     })
-                    .Where("Name").EqualTo("Sten")
+                    .Where(nameof(User.Name)).EqualTo("Sten")
                     .Execute();
 
                 sqlConnection
                     .Delete<User>()
-                    .Where("Id").EqualTo(newId)
-                    .And("Name").NotEqualTo("Sten")
+                    .Where(nameof(User.Id)).EqualTo(newId)
+                    .And(nameof(User.Name)).NotEqualTo("Sten")
                     .Execute();
 
                 var delUsers = sqlConnection

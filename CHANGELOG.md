@@ -1,4 +1,9 @@
 
+## 2.0.1
+- Use Dapper 2.0.
+- Rebuilt to use a fluent api approach. 
+- Only support net standard 2.0
+
 ## 1.4.1
 - Minor changes.
 
