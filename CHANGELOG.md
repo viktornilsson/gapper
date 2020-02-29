@@ -1,4 +1,8 @@
 
+## 2.1.0
+- Use expressions in fluent syntax. 
+- Support for net461.
+
 ## 2.0.1
 - Use Dapper 2.0.
 - Rebuilt to use a fluent api approach. 
