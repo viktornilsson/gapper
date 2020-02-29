@@ -30,5 +30,15 @@ namespace Gapper.Tests.IntegrationTests.Helpers
                 conn.Execute(sql);
             }
         }
+
+        internal static void EmptyTable(string connString)
+        {
+            using (var conn = new SqlConnection(connString))
+            {
+                var sql = @"DELETE FROM [dbo].[User] ";
+
+                conn.Execute(sql);
+            }
+        }
     }
 }

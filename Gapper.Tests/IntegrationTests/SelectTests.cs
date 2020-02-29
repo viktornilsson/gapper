@@ -1,23 +1,35 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data.SqlClient;
 using Gapper.Tests.IntegrationTests.Models;
+using System.Data.SqlClient;
 
 namespace Gapper.Tests.IntegrationTests
 {
     [TestClass]
-    public class SelectWhereTests
-    { 
+    public class SelectTests
+    {
+        [TestMethod]
+        public void SelectAll()
+        {
+            var sql = new SqlConnection("")
+                .Select<User>()
+                .ToSql();
+
+            var expected = "SELECT * FROM [dbo].[User]";
+
+            Assert.AreEqual(expected, sql);
+        }
+
         [TestMethod]
         public void GreaterThanOrLessThan()
         {
             var sql = new SqlConnection("")
                 .Select<User>()
-                .Where(nameof(User.Id)).GreaterThan(0)               
-                .Or(nameof(User.Id)).LessThan(100)
+                .Where(u => u.Id).GreaterThan(0)
+                .Or(u => u.Id).LessThan(100)
                 .ToSql();
 
             var expected = "SELECT * FROM [dbo].[User]\nWHERE [Id] > @id_1\nOR [Id] < @id_2";
-          
+
             Assert.AreEqual(expected, sql);
         }
 
@@ -26,7 +38,7 @@ namespace Gapper.Tests.IntegrationTests
         {
             var sql = new SqlConnection("")
                 .Select<User>()
-                .Where(nameof(User.Name)).Like("%FOO%")                
+                .Where(u => u.Name).Like("%FOO%")
                 .ToSql();
 
             var expected = "SELECT * FROM [dbo].[User]\nWHERE [Name] LIKE @name_1";
@@ -39,7 +51,7 @@ namespace Gapper.Tests.IntegrationTests
         {
             var sql = new SqlConnection("")
                 .Select<User>()
-                .Where(nameof(User.Name)).NotEqualTo("Foo")
+                .Where(u => u.Name).NotEqualTo("Foo")
                 .ToSql();
 
             var expected = "SELECT * FROM [dbo].[User]\nWHERE [Name] != @name_1";

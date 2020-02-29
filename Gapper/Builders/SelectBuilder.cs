@@ -1,73 +1,70 @@
 ﻿using Dapper;
 using Gapper.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Gapper.Builders
 {
-    public interface ISelectExecute<T>
+    public interface ISelectExecute<TClass>
     {
-        List<T> ToList();        
-        Task<List<T>> ToListAsync();
-        T FirstOrDefault();
-        Task<T> FirstOrDefaultAsync();
+        List<TClass> ToList();
+        Task<List<TClass>> ToListAsync();
+        TClass FirstOrDefault();
+        Task<TClass> FirstOrDefaultAsync();
     }
 
-    public interface ISelectBuilder<T> : IStatementBuilder, ISelectExecute<T>
+    public interface ISelectBuilder<TClass> : IStatementBuilder, ISelectExecute<TClass>
     {
-        IConditionBuilder<ISelectWhereBuilder<T>> Where(string columnName);
+        IConditionBuilder<ISelectWhereBuilder<TClass>> Where<TProp>(Expression<Func<TClass, TProp>> prop);
     }
 
-    public interface ISelectWhereBuilder<T> : IStatementBuilder, ISelectExecute<T>
+    public interface ISelectWhereBuilder<TClass> : IStatementBuilder, ISelectExecute<TClass>
     {
-        IConditionBuilder<ISelectWhereBuilder<T>> And(string columnName);
-        IConditionBuilder<ISelectWhereBuilder<T>> Or(string columnName);
+        IConditionBuilder<ISelectWhereBuilder<TClass>> And<TProp>(Expression<Func<TClass, TProp>> prop);
+        IConditionBuilder<ISelectWhereBuilder<TClass>> Or<TProp>(Expression<Func<TClass, TProp>> prop);
     }
 
-    internal class SelectBuilder<T> : StatementBuilder, ISelectBuilder<T>, ISelectWhereBuilder<T>
+    internal class SelectBuilder<TClass> : StatementBuilder, ISelectBuilder<TClass>, ISelectWhereBuilder<TClass>
     {
-        private readonly IDbConnection DbConnection;
+        private readonly IDbConnection _dbConnection;
 
         public SelectBuilder(IDbConnection dbConnection)
         {
-            DbConnection = dbConnection;
+            _dbConnection = dbConnection;
 
-            AddLine($"SELECT * FROM {TableNameHelper.GenerateTableName<T>()}");
+            AddLine($"SELECT * FROM {TableNameHelper.GenerateTableName<TClass>()}");
         }
 
-        public IConditionBuilder<ISelectWhereBuilder<T>> Where(string columnName)
+        public IConditionBuilder<ISelectWhereBuilder<TClass>> Where<TProp>(Expression<Func<TClass, TProp>> prop)
         {
-            return new ConditionBuilder<ISelectWhereBuilder<T>>(this, "WHERE", columnName);
+            return new ConditionBuilder<ISelectWhereBuilder<TClass>>(this, "WHERE", ExpressionHelper.GetPropName(prop));
         }
 
-        public IConditionBuilder<ISelectWhereBuilder<T>> And(string columnName)
+        public IConditionBuilder<ISelectWhereBuilder<TClass>> And<TProp>(Expression<Func<TClass, TProp>> prop)
         {
-            return new ConditionBuilder<ISelectWhereBuilder<T>>(this, "AND", columnName);
+            return new ConditionBuilder<ISelectWhereBuilder<TClass>>(this, "AND", ExpressionHelper.GetPropName(prop));
         }
 
-        public IConditionBuilder<ISelectWhereBuilder<T>> Or(string columnName)
+        public IConditionBuilder<ISelectWhereBuilder<TClass>> Or<TProp>(Expression<Func<TClass, TProp>> prop)
         {
-            return new ConditionBuilder<ISelectWhereBuilder<T>>(this, "OR", columnName);
+            return new ConditionBuilder<ISelectWhereBuilder<TClass>>(this, "OR", ExpressionHelper.GetPropName(prop));
         }
 
-        private new ISelectBuilder<T> AddLine(string line)
+        public List<TClass> ToList()
         {
-            return base.AddLine(line) as ISelectBuilder<T>;
-        }
-
-        public List<T> ToList()
-        {
-            return DbConnection.Query<T>(
+            return _dbConnection.Query<TClass>(
                 sql: ToSql(),
                 param: Parameters,
                 commandType: CommandType.Text).ToList();
         }
 
-        public async Task<List<T>> ToListAsync()
+        public async Task<List<TClass>> ToListAsync()
         {
-            var result = await DbConnection.QueryAsync<T>(
+            var result = await _dbConnection.QueryAsync<TClass>(
                 sql: ToSql(),
                 param: Parameters,
                 commandType: CommandType.Text).ConfigureAwait(false);
@@ -75,17 +72,17 @@ namespace Gapper.Builders
             return result.ToList();
         }
 
-        public T FirstOrDefault()
+        public TClass FirstOrDefault()
         {
-            return DbConnection.Query<T>(
+            return _dbConnection.Query<TClass>(
                 sql: ToSql(),
                 param: Parameters,
                 commandType: CommandType.Text).FirstOrDefault();
         }
 
-        public async Task<T> FirstOrDefaultAsync()
+        public async Task<TClass> FirstOrDefaultAsync()
         {
-            var result = await DbConnection.QueryAsync<T>(
+            var result = await _dbConnection.QueryAsync<TClass>(
                 sql: ToSql(),
                 param: Parameters,
                 commandType: CommandType.Text).ConfigureAwait(false);

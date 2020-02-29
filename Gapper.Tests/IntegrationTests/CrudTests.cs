@@ -11,12 +11,13 @@ namespace Gapper.Tests.IntegrationTests
     public class CrudTests
     {
         private static readonly bool IsAppVeyor = Environment.GetEnvironmentVariable("Appveyor")?.ToUpperInvariant() == "TRUE";
-        
+
         [TestMethod]
         public void CrudTest()
         {
             var connString = DatabaseHelper.GetConnectionString(IsAppVeyor);
             DatabaseHelper.CreateTable(connString);
+            DatabaseHelper.EmptyTable(connString);
 
             using (var sqlConnection = new SqlConnection(connString))
             {
@@ -30,24 +31,24 @@ namespace Gapper.Tests.IntegrationTests
 
                 var user = sqlConnection
                     .Select<User>()
-                    .Where(nameof(User.Name)).EqualTo("Sten")
-                    .And(nameof(User.Id)).EqualTo(newId)               
+                    .Where(a => a.Name)
+                    .EqualTo("Sten")
+                    .And(a => a.Id).EqualTo(newId)
                     .FirstOrDefault();
 
                 Assert.IsTrue(user != null);
 
                 sqlConnection
-                    .Update<User>(new UpdateValues
-                    {
-                        { nameof(User.Name), "Pelle" }
-                    })
-                    .Where(nameof(User.Name)).EqualTo("Sten")
+                    .Update<User>()
+                    .Set(x => x.Name, "Pelle")
+                    .Set(x => x.Age, 1)
+                    .Where(u => u.Name).EqualTo("Sten")
                     .Execute();
 
                 sqlConnection
                     .Delete<User>()
-                    .Where(nameof(User.Id)).EqualTo(newId)
-                    .And(nameof(User.Name)).NotEqualTo("Sten")
+                    .Where(u => u.Id).EqualTo(newId)
+                    .And(u => u.Name).NotEqualTo("Sten")
                     .Execute();
 
                 var delUsers = sqlConnection
@@ -55,8 +56,7 @@ namespace Gapper.Tests.IntegrationTests
                     .ToList();
 
                 Assert.IsTrue(delUsers.Count == 0);
-            }                        
-        }
-        
+            }
+        } 
     }
 }

@@ -1,37 +1,35 @@
 ﻿using Gapper.Helpers;
 using Gapper.Builders;
-using System.Collections.Generic;
 using System.Data;
 
 namespace Gapper
 {
-    public class UpdateValues : Dictionary<string, object> { }
-
     public static class Gapper
     {
-        public static ISelectBuilder<T> Select<T>(this IDbConnection connection)
+        public static ISelectBuilder<TClass> Select<TClass>(this IDbConnection connection)
         {
-            return new SelectBuilder<T>(connection) as SelectBuilder<T>;
+            return new SelectBuilder<TClass>(connection) as SelectBuilder<TClass>;
         }
 
-        public static IInsertBuilder<T> Insert<T>(this IDbConnection connection, T obj)
+        public static IInsertBuilder<TClass> Insert<TClass>(this IDbConnection connection, TClass obj)
         {
-            return new InsertBuilder<T>(connection, obj) as InsertBuilder<T>;
+            return new InsertBuilder<TClass>(connection, obj) as InsertBuilder<TClass>;
         }
 
-        public static IUpdateBuilder<T> Update<T>(this IDbConnection connection, UpdateValues values)
+        public static IUpdateSetBuilder<TClass> Update<TClass>(this IDbConnection connection)
         {
-            return new UpdateBuilder<T>(connection, values) as UpdateBuilder<T>;
+            return new UpdateBuilder<TClass>(connection) as UpdateBuilder<TClass>;
         }
 
-        public static IDeleteBuilder<T> Delete<T>(this IDbConnection connection)
+        public static IDeleteBuilder<TClass> Delete<TClass>(this IDbConnection connection)
         {
-            return new DeleteBuilder<T>(connection) as DeleteBuilder<T>;
+            return new DeleteBuilder<TClass>(connection) as DeleteBuilder<TClass>;
         }
 
-        public static string GetTableName<T>()
+        public static string GetTableName<TClass>()
         {
-            return TableNameHelper.GenerateTableName<T>();
-        }        
+            return TableNameHelper.GenerateTableName<TClass>();
+        }
     }
+
 }

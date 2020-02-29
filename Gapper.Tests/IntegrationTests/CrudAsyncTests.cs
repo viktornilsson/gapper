@@ -11,12 +11,13 @@ namespace Gapper.Tests.IntegrationTests
     public class CrudAsyncTests
     {
         private static readonly bool IsAppVeyor = Environment.GetEnvironmentVariable("Appveyor")?.ToUpperInvariant() == "TRUE";
-        
+
         [TestMethod]
         public async Task CrudTestAsync()
         {
             var connString = DatabaseHelper.GetConnectionString(IsAppVeyor);
             DatabaseHelper.CreateTable(connString);
+            DatabaseHelper.EmptyTable(connString);
 
             using (var sqlConnection = new SqlConnection(connString))
             {
@@ -30,24 +31,22 @@ namespace Gapper.Tests.IntegrationTests
 
                 var user = await sqlConnection
                     .Select<User>()
-                    .Where(nameof(User.Name)).EqualTo("Sten")
-                    .And(nameof(User.Id)).EqualTo(newId)               
+                    .Where(u => u.Name).EqualTo("Sten")
+                    .And(u => u.Id).EqualTo(newId)
                     .FirstOrDefaultAsync();
 
                 Assert.IsTrue(user != null);
 
                 await sqlConnection
-                    .Update<User>(new UpdateValues
-                    {
-                        { nameof(User.Name), "Pelle" }
-                    })
-                    .Where(nameof(User.Name)).EqualTo("Sten")
+                    .Update<User>()
+                    .Set(x => x.Name, "Pelle")
+                    .Where(u => u.Name).EqualTo("Sten")
                     .ExecuteAsync();
 
                 await sqlConnection
                     .Delete<User>()
-                    .Where(nameof(User.Id)).EqualTo(newId)
-                    .And(nameof(User.Name)).NotEqualTo("Sten")
+                    .Where(u => u.Id).EqualTo(newId)
+                    .And(u => u.Name).NotEqualTo("Sten")
                     .ExecuteAsync();
 
                 var delUsers = await sqlConnection
@@ -55,8 +54,7 @@ namespace Gapper.Tests.IntegrationTests
                     .ToListAsync();
 
                 Assert.IsTrue(delUsers.Count == 0);
-            }                        
+            }
         }
-        
     }
 }

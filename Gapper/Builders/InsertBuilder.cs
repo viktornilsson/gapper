@@ -3,22 +3,21 @@ using Gapper.Helpers;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Gapper.Builders
 {
-    public interface IInsertBuilder<T> : IStatementBuilder
+    public interface IInsertBuilder<TClass> : IStatementBuilder
     {
         int Execute();
         Task<int> ExecuteAsync();
     }
 
-    internal class InsertBuilder<T> : StatementBuilder, IInsertBuilder<T>
+    internal class InsertBuilder<TClass> : StatementBuilder, IInsertBuilder<TClass>
     {
         private readonly IDbConnection DbConnection;
 
-        public InsertBuilder(IDbConnection dbConnection, T obj)
+        public InsertBuilder(IDbConnection dbConnection, TClass obj)
         {
             DbConnection = dbConnection;
 
@@ -41,7 +40,7 @@ namespace Gapper.Builders
                 values.Add($"@{paramterName}");
             }
 
-            AddLine($"INSERT INTO {TableNameHelper.GenerateTableName<T>()} ({string.Join(",", columns.ToArray())}) ");
+            AddLine($"INSERT INTO {TableNameHelper.GenerateTableName<TClass>()} ({string.Join(",", columns.ToArray())}) ");
             AddLine($"VALUES ({string.Join(",", values.ToArray())})");
             AddLine("SELECT CAST(SCOPE_IDENTITY() AS INT)");
         }
